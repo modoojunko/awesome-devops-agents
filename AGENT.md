@@ -15,14 +15,14 @@
 | 环境检测 | `env-skill` | 开发前 | 验证工具链就绪 |
 | 代码生成 | `code-skill` | spec 锁定后 | 按 spec 分层生成代码 |
 | 构建验证 | `build-skill` | 代码生成后 | 编译、lint、测试 |
-| Git 操作 | `git-skill` | 开发完成 | 分支、commit、MR |
+| Git 操作 | `git-skill` | 开发完成 | 分支、commit、MR，推后进入 REVIEWING |
 | 容器化 | `docker-skill` | 构建通过 | Docker 本地运行验证 |
 | K8s 部署 | `k8s-skill` | 容器化后 | dev 命名空间部署 |
 
 ## 执行流程（状态机）
 
 ```
-IDLE → FETCHING_REQ → DESIGNING → DEVELOPING → MR_READY → IDLE
+IDLE → FETCHING_REQ → DESIGNING → DEVELOPING → REVIEWING → IDLE
 ```
 
 | 状态 | 说明 | 入口 | 出口 |
@@ -30,8 +30,8 @@ IDLE → FETCHING_REQ → DESIGNING → DEVELOPING → MR_READY → IDLE
 | IDLE | 空闲，等待开发者指令 | — | FETCHING_REQ |
 | FETCHING_REQ | 拉取 Jira 任务列表 | jira-skill | DESIGNING |
 | DESIGNING | 人机协作设计 spec | spec-skill | DEVELOPING |
-| DEVELOPING | 代码生成 + 构建 + 测试 | code/build/git-skill | MR_READY |
-| MR_READY | MR 已提交，等待 review | git-skill | IDLE |
+| DEVELOPING | 代码生成 + 构建 + 测试 | code/build/git-skill | REVIEWING |
+| REVIEWING | MR 待审查，等待开发者 review | git-skill | IDLE |
 
 ## 工具权限
 
@@ -46,7 +46,7 @@ IDLE → FETCHING_REQ → DESIGNING → DEVELOPING → MR_READY → IDLE
 
 ## 状态持久化
 
-当前 pipeline 状态写入 `<project-root>/.agent/pipeline-status.md`，格式：
+当前 pipeline 状态写入 `<project-root>/.agent/pipeline-status.json`，每次更新时覆盖：
 
 ```json
 {
@@ -54,6 +54,8 @@ IDLE → FETCHING_REQ → DESIGNING → DEVELOPING → MR_READY → IDLE
   "status": "DESIGNING",
   "jira_issue": "PROJ-123",
   "spec_path": "docs/specs/my-feature-spec.md",
-  "branch": "feat/my-feature"
+  "branch": "feat/my-feature",
+  "created_at": "2026-06-17T10:00:00Z",
+  "updated_at": "2026-06-17T12:00:00Z"
 }
 ```
