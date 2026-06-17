@@ -65,9 +65,18 @@ ffmpeg -f concat -safe 0 -i out/audio-list.txt -c copy out/full-audio.mp3
 ffmpeg -i out/video-preview.mp4 -i out/full-audio.mp3 -c:v copy -c:a aac -shortest out/final.mp4
 ```
 
-### Step 6: 输出
+### Step 6: 最终审查
 
-将 `out/final.mp4` 路径返回给调用方。
+将 `out/final.mp4` 路径告知用户，让用户播放审查（含音频）。等待用户确认。
+
+如果用户提出修改意见：
+- 画面问题 → 返回 article-to-video-skill 调整 media-script.json，从 Step 2 重新开始
+- 音频问题 → 调整 tts_text 后从 Step 4 重新合成
+- 再次等待确认
+
+### Step 7: 输出
+
+用户确认后，将 `out/final.mp4` 路径返回给调用方。
 
 ## 错误处理
 
@@ -81,7 +90,9 @@ ffmpeg -i out/video-preview.mp4 -i out/full-audio.mp3 -c:v copy -c:a aac -shorte
 ## Checklist
 
 - [ ] npm install 完成
-- [ ] 视频已渲染（out/video.mp4）
+- [ ] 视频已渲染（out/video-preview.mp4）
+- [ ] 视频预览已确认
 - [ ] 音频已逐页合成（out/audio/page-*.mp3）
 - [ ] 音视频已合流（out/final.mp4）
+- [ ] 最终合流已确认
 - [ ] final.mp4 路径已返回
