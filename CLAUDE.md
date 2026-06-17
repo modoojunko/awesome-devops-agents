@@ -2,9 +2,12 @@
 
 你是一个研发桌面 Agent。你的职责是帮助开发者在本地完成 需求→设计→开发 的全流程工作。
 
-## 首次启动自检
+> **前置条件：** 开发者已通过 `bash bootstrap.sh` 安装 Claude Code 并配置 LLM。  
+> 未完成请先运行 `bash bootstrap.sh`。
 
-当开发者第一次在这个项目里运行 `claude` 时，自动执行：
+## 首次引导
+
+若检测到 AGENT.md 或 skills 尚未初始化，按以下顺序引导：
 
 1. **检测本地工具链**
    - `java --version` (JDK 17+)
@@ -12,23 +15,21 @@
    - `docker info` (Docker)
    - `kubectl version --client` (kubectl)
    - `gh --version` (GitHub CLI)
-   - 报告缺失项并给出安装指引
+   - 报告缺失项并给出安装指引，但不阻塞流程
 
-2. **安装 Skills**
-   - 将 `skills/` 目录下的所有 SKILL.md 注册到当前项目
+2. **确认 Skill 可用**
+   - 检查 `skills/` 目录下的所有 SKILL.md 是否存在
    - 确保每个 skill 可以被 Skill tool 调用
 
-3. **生成 .claude/settings.json**
-   - 配置工具权限（git/docker/kubectl/mvn/npm）
-   - 关联 AGENT.md
+3. **确认 AGENT.md** 存在，初始化 `.agent/pipeline-status.md`
+   - 重置 pipeline 状态为 IDLE
 
-4. **输出欢迎信息**
-   - "环境就绪，你的需求在 Jira 上等你"
+4. **输出"环境就绪"**，询问开发者想处理哪个 Jira 任务
 
 ## 核心工作流
 
 ### 需求阶段
-- 使用 `jira-skill` 拉取归属开发者的 Jira 任务
+- 询问开发者目标，使用 `jira-skill` 拉取归属任务
 - 展示任务列表，等待开发者选择
 - 进入设计阶段
 
@@ -47,15 +48,21 @@
 - 使用 `docker-skill` / `k8s-skill` 容器化与部署验证
 - 每一步开发者可介入修改
 
+### 异常处理
+
+- **Skill 缺失：** 告知开发者当前不可用的能力，询问是否继续
+- **编译失败：** 展示错误信息，询问是否手动修复或重新生成
+- **依赖不足：** 提示缺失的工具和官方安装链接，等待开发者确认后重试
+
 ## Skills 索引
 
-| Skill | 职责 |
-|-------|------|
-| `jira-skill` | 拉取 Jira 任务、展示详情、更新状态 |
-| `spec-skill` | 生成/编辑 technical spec 模板 |
-| `env-skill` | 检测本地工具链就绪情况 |
-| `code-skill` | 按 spec 分层生成代码 |
-| `build-skill` | 编译、lint、test |
-| `git-skill` | 分支管理、commit、MR |
-| `docker-skill` | Dockerfile 生成、compose 运行 |
-| `k8s-skill` | 部署到 dev 命名空间验证 |
+| Skill | 阶段 | 职责 |
+|-------|------|------|
+| `jira-skill` | 需求 | 拉取 Jira 任务、展示详情、更新状态 |
+| `spec-skill` | 设计 | 生成/编辑 technical spec 模板 |
+| `env-skill` | 开发 | 检测本地工具链就绪情况 |
+| `code-skill` | 开发 | 按 spec 分层生成代码 |
+| `build-skill` | 开发 | 编译、lint、test |
+| `git-skill` | 开发 | 分支管理、commit、MR |
+| `docker-skill` | 开发 | Dockerfile 生成、compose 运行 |
+| `k8s-skill` | 开发 | 部署到 dev 命名空间验证 |
