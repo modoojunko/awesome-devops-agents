@@ -52,13 +52,24 @@ configure_anthropic() {
     export ANTHROPIC_API_KEY
     # Persist to shell profile if not present
     local profile_files=("$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.profile")
+    local profile_count=0
     for pf in "${profile_files[@]}"; do
         if [ -f "$pf" ] && ! grep -q "ANTHROPIC_API_KEY" "$pf" 2>/dev/null; then
-            echo "export ANTHROPIC_API_KEY=\"$ANTHROPIC_API_KEY\"" >> "$pf"
+            printf '\nexport ANTHROPIC_API_KEY=%q\n' "$ANTHROPIC_API_KEY" >> "$pf"
             ok "Saved to $pf"
-            break
+            profile_count=$((profile_count + 1))
         fi
     done
+    if [ "$profile_count" -eq 0 ]; then
+        # Fallback: write to first existing profile
+        for pf in "${profile_files[@]}"; do
+            if [ -f "$pf" ]; then
+                printf '\nexport ANTHROPIC_API_KEY=%q\n' "$ANTHROPIC_API_KEY" >> "$pf"
+                ok "Updated existing key in $pf"
+                break
+            fi
+        done
+    fi
     ok "Anthropic API Key configured"
 }
 
@@ -81,6 +92,7 @@ configure_custom() {
   "endpoint": "${CUSTOM_ENDPOINT}"
 }
 __EOF__
+    chmod 600 "$HOME/.claude/settings.json"
     ok "Custom LLM provider configured"
 }
 
@@ -92,8 +104,9 @@ echo ""
 read -rp "Choice [1/2]: " llm_choice
 
 case "$llm_choice" in
+    1) configure_anthropic ;;
     2) configure_custom ;;
-    *) configure_anthropic ;;
+    *) echo "Invalid choice, defaulting to Anthropic" && configure_anthropic ;;
 esac
 
 # ─── Done ──────────────────────────────────────────────────────────
