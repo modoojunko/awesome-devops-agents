@@ -21,7 +21,7 @@
    - 检查 `skills/` 目录下的所有 SKILL.md 是否存在
    - 确保每个 skill 可以被 Skill tool 调用
 
-3. **确认 AGENT.md** 存在，初始化 `.agent/pipeline-status.md`
+3. **确认 AGENT.md** 存在，初始化 `.agent/pipeline-status.json`
    - 重置 pipeline 状态为 IDLE
 
 4. **输出"环境就绪"**，询问开发者想处理哪个 Jira 任务
@@ -41,11 +41,12 @@
 - 定稿后进入开发阶段
 
 ### 开发阶段
+- 使用 `git-skill` **创建分支**（第一步，代码生成前）
 - 使用 `env-skill` 检测环境就绪
 - 使用 `code-skill` 按 spec 分层生成代码（接口→业务→数据→测试）
 - 使用 `build-skill` 编译验证 + 运行测试
-- 使用 `git-skill` 创建分支、分步 commit、推送 MR
 - 使用 `docker-skill` / `k8s-skill` 容器化与部署验证
+- 使用 `git-skill` **分步 commit + 推送 MR**（最后一步）
 - 每一步开发者可介入修改
 
 ### 异常处理
