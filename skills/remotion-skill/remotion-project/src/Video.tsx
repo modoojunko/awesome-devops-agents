@@ -1,6 +1,5 @@
 import { useCurrentFrame, useVideoConfig } from 'remotion';
-import { parseScript, MediaScript, Page } from './utils/parseScript';
-import { getPageFrameRange } from './utils/timing';
+import { parseScript, Page } from './utils/parseScript';
 import { TitleLayout } from './layouts/TitleLayout';
 import { BodyLayout } from './layouts/BodyLayout';
 import { CodeLayout } from './layouts/CodeLayout';
@@ -9,15 +8,22 @@ import { QuoteLayout } from './layouts/QuoteLayout';
 import { SummaryLayout } from './layouts/SummaryLayout';
 import { TasteParams } from './styles/theme';
 
-const script: MediaScript = parseScript('./src/media-script.json');
+interface LayoutProps {
+  page: Page;
+  frame: number;
+  fps: number;
+  taste: TasteParams;
+}
 
-const layoutComponents: Record<string, React.FC<{ page: Page; frame: number; fps: number; taste: TasteParams }>> = {
-  title: TitleLayout,
-  body: BodyLayout,
-  code: CodeLayout,
-  bullet: BulletLayout,
-  quote: QuoteLayout,
-  summary: SummaryLayout,
+const script = parseScript('./src/media-script.json');
+
+const layoutComponents: Record<string, React.FC<LayoutProps>> = {
+  title: TitleLayout as React.FC<LayoutProps>,
+  body: BodyLayout as React.FC<LayoutProps>,
+  code: CodeLayout as React.FC<LayoutProps>,
+  bullet: BulletLayout as React.FC<LayoutProps>,
+  quote: QuoteLayout as React.FC<LayoutProps>,
+  summary: SummaryLayout as React.FC<LayoutProps>,
 };
 
 export const Video: React.FC = () => {
