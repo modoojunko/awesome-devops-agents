@@ -5,10 +5,9 @@ import { HighlightLine } from '../animations/HighlightLine';
 
 interface CodeBlockProps {
   element: Element;
-  frame: number;
 }
 
-export const CodeBlock: React.FC<CodeBlockProps> = ({ element, frame }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ element }) => {
   const lines = (element.content || '').split('\n');
   const highlightAnims = element.animations?.filter(a => a.type === 'highlightLine') || [];
 

@@ -4,10 +4,9 @@ import { SlideUp } from '../animations/SlideUp';
 
 interface BulletListProps {
   element: Element;
-  fps: number;
 }
 
-export const BulletList: React.FC<BulletListProps> = ({ element, fps }) => {
+export const BulletList: React.FC<BulletListProps> = ({ element }) => {
   const items = (element.content || '').split('\n').filter(Boolean);
   const baseDelay = element.animation?.delay || 0;
 
