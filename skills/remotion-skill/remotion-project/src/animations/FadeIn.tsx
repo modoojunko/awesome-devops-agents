@@ -1,5 +1,5 @@
 import React from 'react';
-import { interpolate, useCurrentFrame } from 'remotion';
+import { interpolate, useCurrentFrame, useVideoConfig } from 'remotion';
 
 interface FadeInProps {
   children: React.ReactNode;
@@ -9,11 +9,12 @@ interface FadeInProps {
 
 export const FadeIn: React.FC<FadeInProps> = ({ children, duration, delay }) => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
   const opacity = interpolate(
     frame,
-    [delay * 30, (delay + duration) * 30],
+    [delay * fps, (delay + duration) * fps],
     [0, 1],
     { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }
   );
-  return <div style={{ opacity }}>{children}</div>;
+  return <div style={{ opacity, willChange: 'opacity' }}>{children}</div>;
 };
