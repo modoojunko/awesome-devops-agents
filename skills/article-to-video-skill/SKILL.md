@@ -1,16 +1,16 @@
 ---
 name: article-to-video-skill
-description: 把一篇文章做成 1920×1080 技术教程视频 — 分析文章 → 设计风格 → 生成脚本 → 调用 remotion-skill 渲染
+description: 把一篇文章做成 1920×1080 技术教程视频 — 分析文章 → 设计风格 → 生成脚本 → 调用 hyperframes-skill 渲染
 ---
 
 # Article-to-Video Skill
 
-把一篇文章做成 B 站/YouTube 风格的横屏口播视频。**编排层** — 分析文章、设计视觉、生成数据，然后调用 `remotion-skill` 执行渲染。
+把一篇文章做成 B 站/YouTube 风格的横屏口播视频。**编排层** — 分析文章、设计视觉、生成数据，然后调用 `hyperframes-skill` 执行渲染。
 
 ## 前提条件
 
 - `taste-skill` 已安装（用于视觉风格设计）
-- `remotion-skill` 已安装（用于渲染 + TTS + 合流）
+- `hyperframes-skill` 已安装（用于 HTML 合成 + 渲染 + TTS + 合流）
 
 ## 工作流
 
@@ -29,7 +29,7 @@ taste-skill 输出:
 
 ### Step 2: 分析文章，生成 media-script.json
 
-分析文章结构，拆分为页，每页匹配 layout 类型，写入 `skills/remotion-skill/remotion-project/src/media-script.json`。
+分析文章结构，拆分为页，每页匹配 layout 类型，写入 `skills/hyperframes-skill/src/media-script.json`。
 
 每页规则：
 
@@ -50,21 +50,21 @@ taste-skill 输出:
 
 将生成的 media-script.json 内容摘要（总页数、每页 layout 类型、每页口播文本）展示给用户，确认脚本结构无误。用户同意后进入下一步。
 
-### Step 4: 调用 remotion-skill
+### Step 4: 调用 hyperframes-skill
 
-调用 `remotion-skill` 完成视频渲染 → 人工审查 → TTS 合成 → 音视频合流。
+调用 `hyperframes-skill` 完成 HTML 合成 → 预览审查 → 渲染 → TTS 合成 → 音视频合流。
 
 ### Step 5: 输出
 
-将 `skills/remotion-skill/remotion-project/out/final.mp4` 路径告知用户。
+将 `skills/hyperframes-skill/out/final.mp4` 路径告知用户。
 
-## 与 remotion-skill 的分工
+## 与 hyperframes-skill 的分工
 
-| | article-to-video-skill（编排层） | remotion-skill（执行层） |
+| | article-to-video-skill（编排层） | hyperframes-skill（执行层） |
 |---|---|---|
-| 职责 | 读文章 → taste-skill → 生成脚本 | 渲染 → TTS → 合流 |
+| 职责 | 读文章 → taste-skill → 生成脚本 | HTML 合成 → 渲染 → TTS → 合流 |
 | 产出 | media-script.json | final.mp4 |
-| 依赖 | taste-skill, remotion-skill | Remotion, Edge-TTS, ffmpeg |
+| 依赖 | taste-skill, hyperframes-skill | HyperFrames, Edge-TTS, ffmpeg |
 | 调用方 | AI 直接使用 | 被 article-to-video-skill 调用 |
 
 ## 错误处理
@@ -73,13 +73,13 @@ taste-skill 输出:
 |------|------|
 | taste-skill 调用失败 | 使用默认参数（medium/comfortable/balanced/inter/dark） |
 | media-script.json 格式错误 | AI 自行检查修复后重试 |
-| remotion-skill 失败 | 展示 remotion-skill 报错日志，询问是否重试 |
+| hyperframes-skill 失败 | 展示 hyperframes-skill 报错日志，询问是否重试 |
 
 ## Checklist
 
 - [ ] 文章已阅读并理解
 - [ ] taste-skill 已调用，视觉参数已确定
-- [ ] media-script.json 已生成并写入 remotion 项目目录
+- [ ] media-script.json 已生成并写入 hyperframes 项目目录
 - [ ] 脚本结构已给用户确认
-- [ ] remotion-skill 调用完成（含视频审查）
+- [ ] hyperframes-skill 调用完成（含预览 + 视频审查）
 - [ ] final.mp4 已输出给用户
