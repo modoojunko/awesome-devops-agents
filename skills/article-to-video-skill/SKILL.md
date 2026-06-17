@@ -46,11 +46,15 @@ taste-skill 输出:
 
 完整 JSON 格式参考 `docs/superpowers/specs/2026-06-17-remotion-skill-design.md`。
 
-### Step 3: 调用 remotion-skill
+### Step 3: 审查脚本（可选）
 
-调用 `remotion-skill` 完成视频渲染 + TTS 合成 + 音视频合流。
+将生成的 media-script.json 内容摘要（总页数、每页 layout 类型、每页口播文本）展示给用户，确认脚本结构无误。用户同意后进入下一步。
 
-### Step 4: 输出
+### Step 4: 调用 remotion-skill
+
+调用 `remotion-skill` 完成视频渲染 → 人工审查 → TTS 合成 → 音视频合流。
+
+### Step 5: 输出
 
 将 `skills/remotion-skill/remotion-project/out/final.mp4` 路径告知用户。
 
@@ -76,5 +80,6 @@ taste-skill 输出:
 - [ ] 文章已阅读并理解
 - [ ] taste-skill 已调用，视觉参数已确定
 - [ ] media-script.json 已生成并写入 remotion 项目目录
-- [ ] remotion-skill 调用完成
+- [ ] 脚本结构已给用户确认
+- [ ] remotion-skill 调用完成（含视频审查）
 - [ ] final.mp4 已输出给用户

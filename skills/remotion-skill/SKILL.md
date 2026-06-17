@@ -26,17 +26,26 @@ cd skills/remotion-skill/remotion-project
 ls node_modules/.package-lock.json 2>/dev/null && echo "ready" || npm install
 ```
 
-### Step 2: 渲染视频
+### Step 2: 渲染视频供预览
 
 ```bash
 cd skills/remotion-skill/remotion-project
 mkdir -p out
-npx remotion render src/Root.tsx Video out/video.mp4
+npx remotion render src/Root.tsx Video out/video-preview.mp4
 ```
 
-### Step 3: 合成 TTS 音频
+### Step 3: 人工审查
 
-逐页读取 media-script.json 中的 `tts_text`，用 Edge-TTS 生成：
+将 `out/video-preview.mp4` 路径告知用户，让用户播放审查。等待用户确认无误后再继续。
+
+如果用户提出修改意见：
+- 返回 article-to-video-skill 调整 media-script.json
+- 重新执行 Step 2 渲染
+- 再次等待确认
+
+### Step 4: 合成 TTS 音频
+
+用户确认后，逐页读取 media-script.json 中的 `tts_text`，用 Edge-TTS 生成：
 
 ```bash
 mkdir -p out/audio
@@ -45,7 +54,7 @@ edge-tts --text "第2页口播" --voice zh-CN-XiaoxiaoNeural --write-media out/a
 # ... 每页一条
 ```
 
-### Step 4: 合流
+### Step 5: 合流
 
 ```bash
 # 拼接音频
@@ -53,10 +62,10 @@ for f in out/audio/page-*.mp3; do echo "file '$PWD/$f'" >> out/audio-list.txt; d
 ffmpeg -f concat -safe 0 -i out/audio-list.txt -c copy out/full-audio.mp3
 
 # 混入视频
-ffmpeg -i out/video.mp4 -i out/full-audio.mp3 -c:v copy -c:a aac -shortest out/final.mp4
+ffmpeg -i out/video-preview.mp4 -i out/full-audio.mp3 -c:v copy -c:a aac -shortest out/final.mp4
 ```
 
-### Step 5: 输出
+### Step 6: 输出
 
 将 `out/final.mp4` 路径返回给调用方。
 
