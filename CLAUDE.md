@@ -52,7 +52,7 @@
 | Skill | 职责 |
 |-------|------|
 | `jira-skill` | 拉取 Jira 任务、展示详情、更新状态 |
-| `spec-skill` | 生成/编辑 technial spec 模板 |
+| `spec-skill` | 生成/编辑 technical spec 模板 |
 | `env-skill` | 检测本地工具链就绪情况 |
 | `code-skill` | 按 spec 分层生成代码 |
 | `build-skill` | 编译、lint、test |
