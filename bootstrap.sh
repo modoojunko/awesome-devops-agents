@@ -85,6 +85,14 @@ configure_custom() {
     fi
     # Write Claude Code config file
     mkdir -p "$HOME/.claude"
+    if [ -f "$HOME/.claude/settings.json" ]; then
+        warn "~/.claude/settings.json already exists. Overwrite? [y/N]"
+        read -rp "" confirm
+        if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+            ok "Skipped settings.json — existing config preserved"
+            return
+        fi
+    fi
     cat > "$HOME/.claude/settings.json" << __EOF__
 {
   "model": "${CUSTOM_MODEL:-claude-sonnet-4-6}",
