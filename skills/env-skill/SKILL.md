@@ -16,6 +16,7 @@ description: 检测本地开发环境工具链是否就绪
 | Docker | `docker info --format '{{.OSType}}'` | — | 容器化 |
 | kubectl | `kubectl version --client -o json` | — | K8s 操作 |
 | gh | `gh --version` | — | Jira/GitHub 交互 |
+| gh auth | `gh auth status` | 已登录 | 需配置 GitHub Token |
 | Git | `git --version` | 2.0 | 版本控制 |
 
 ## 用法
@@ -27,6 +28,7 @@ node --version
 docker info --format '{{.OSType}}' 2>/dev/null || echo "missing"
 kubectl version --client 2>/dev/null || echo "missing"
 gh --version 2>/dev/null || echo "missing"
+gh auth status 2>/dev/null || echo "⚠️  gh not authenticated"
 git --version
 ```
 
@@ -40,6 +42,7 @@ Markdown 表格：
 | Node.js | ✅ | 20.11.0 | OK |
 | Docker | ❌ | — | 未安装，请访问 docker.com |
 | kubectl | ⚠️ | 1.28 | 已安装但未连接集群 |
+| gh auth | ❌ | — | 未登录，执行 `scripts/setup-github.sh` 配置 |
 
 ## Checklist
 

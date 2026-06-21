@@ -1,0 +1,31 @@
+# Agent runtime state
+.agent/
+.agents/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Java
+target/
+*.class
+*.jar
+*.war
+*.nar
+
+# Docker
+.docker/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

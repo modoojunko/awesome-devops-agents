@@ -7,6 +7,9 @@ description: Git 分支管理、分步 commit、推送 MR
 
 管理代码版本控制流程：从创建分支到提交 MR。
 
+> **前置条件：** 确保 `gh` CLI 已认证，否则 `gh pr create` 会失败。
+> 执行 `gh auth status` 检查，或运行 `scripts/setup-github.sh` 配置。
+
 ## 流程
 
 ### 1. 创建功能分支
@@ -28,7 +31,7 @@ git commit -m "feat: add UserController login endpoint"
 
 ```bash
 git push -u origin feat/PROJ-123-user-login
-gh pr create --title "feat: 用户登录模块" --body "Closes PROJ-123"
+cli/gh-pr.sh create --title "feat: 用户登录模块" --body "Closes PROJ-123"
 ```
 
 ## Commit 规范
